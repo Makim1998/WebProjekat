@@ -1,6 +1,7 @@
 package model;
 
 public class Korisnik {
+
 	public String email;
 	public String lozinka;
 	public String ime;

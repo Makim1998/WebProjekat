@@ -2,17 +2,39 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Aplikacija</title>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/homepage.css">
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
+	<link href="css/homepage.css" rel="stylesheet">
 </head>
 <body>
-	<div id = "left">
-		
-		
-	</div>
-	<div id = "right">
-	</div>
-	<a href="logout">Odjavi se</a>
+
+  <div class="d-flex" id="wrapper">
+
+    <!-- Sidebar -->
+    <div class="bg-light border-right" id="sidebar-wrapper">
+      <div class="sidebar-heading">Aplikacija </div>
+      <div class="list-group list-group-flush">
+      	<a href="#" class="list-group-item list-group-item-action bg-light">Virtuelne masine</a>
+        <a href="#" class="list-group-item list-group-item-action bg-light">Korisnici</a>
+        
+        <a href="#" class="list-group-item list-group-item-action bg-light">Organizacije</a>
+        <a href="#" class="list-group-item list-group-item-action bg-light">Kategorije</a>
+        <a href="#" class="list-group-item list-group-item-action bg-light">Diskovi</a>
+        <a href="#" class="list-group-item list-group-item-action bg-light">Profil</a>
+        <button type="submit" class="btn btn-primary btn-block">Odjavi se</button>
+      </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+    </div>
+    <!-- /#page-content-wrapper -->
+
+  </div>
+  <!-- /#wrapper -->
 </body>
 </html>

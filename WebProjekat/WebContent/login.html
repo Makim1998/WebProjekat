@@ -1,30 +1,26 @@
 <html>
     <head>
-       <meta charset="UTF-8"/>
-    <title>Prijava</title>
+       	<meta charset="UTF-8"/>
+       	<link rel="stylesheet" href="css/bootstrap.min.css">
+       	<link rel="stylesheet" href="css/login.css">
+       	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+       	<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/login.js"></script>
     </head>
     <body>
-        <form action = "/prijaviSe" method="GET">
-            <table>
-                <tr>
-                    <td>Korisnicko ime : </td>
-                    <td>                                                
-                        <input type="text" name="korisnickoIme" required/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Lozinka : </td>
-                    <td>                                                
-                        <input type = "password" name="lozinka"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>                                                
-                        <input type="submit" value = "prijava"/>
-                    </td>
-                </tr>
-            </table>
-        </form>
+        <div class="login-form">
+    		<form>
+        		<h2 class="text-center">Log in</h2>       
+        		<div class="form-group">
+           			<input type="text" class="form-control" placeholder="Username" required="required">
+        		</div>
+        		<div class="form-group">
+            		<input type="password" class="form-control" placeholder="Password" required="required">
+        		</div>
+        		<div class="form-group">
+            		<button type="submit" class="btn btn-primary btn-block">Log in</button>
+        		</div>    
+    		</form>
+		</div>
     </body>
 </html>

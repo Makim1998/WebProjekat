@@ -5,7 +5,7 @@ public class Korisnik {
 	public String lozinka;
 	public String ime;
 	public String prezime;
-	public Organizacija organizacija;
+	public String organizacija;
 	public Uloga uloga;
 	
 	public Korisnik() {
@@ -54,11 +54,11 @@ public class Korisnik {
 		this.prezime = prezime;
 	}
 
-	public Organizacija getOrganizacija() {
+	public String getOrganizacija() {
 		return organizacija;
 	}
 
-	public void setOrganizacija(Organizacija organizacija) {
+	public void setOrganizacija(String organizacija) {
 		this.organizacija = organizacija;
 	}
 

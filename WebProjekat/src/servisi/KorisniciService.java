@@ -3,6 +3,7 @@ package servisi;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -18,60 +19,41 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
-import json.KorisnikLog;
 import model.Korisnici;
 import model.Korisnik;
 
 
-@Path("/aplikacija")
-public class Glavni {
+@Path("/korisnici")
+public class KorisniciService {
 	@Context
 	HttpServletRequest request;
 	@Context
 	ServletContext ctx;
 	
 	private static Gson g = new Gson();
-
+	
+	@GET
+	@Path("/getKorisnici")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Collection<Korisnik> getJustProducts() {
+		System.out.println("Korisnici");
+		return getKorisnici().korisnici;
+	}
+	
 	@POST
-	@Path("/login")
+	@Path("/add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Korisnik login(KorisnikLog korisnik) {
-		System.out.println("Login");
-		Korisnik ulogovan = validiraj(korisnik);
-		request.getSession().setAttribute("ulogovan", ulogovan);
-		return ulogovan;
-		
+	public Korisnik addKorisnik(Korisnik k) {
+		System.out.println("Dodavanje korisnika");
+		System.out.println(k);
+		if(getKorisnici().getKorisnik(k.email) == null) {
+			return null;
+		};
+		((Korisnici) ctx.getAttribute("korisnici")).korisnici.add(k);
+		return k;
 	}
 	
-	@GET
-	@Path("/user")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Korisnik getUser() {
-		Korisnik ulogovan = (Korisnik) request.getSession().getAttribute("ulogovan");
-		System.out.println(ulogovan);
-		return ulogovan;
-		
-	}
-	@GET
-	@Path("/logout")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String logout() {
-		request.getSession().setAttribute("ulogovan", null);
-		request.getSession().invalidate();
-		return "OK";
-		
-	}
-	
-	private Korisnik validiraj(KorisnikLog korisnik) {
-		for(Korisnik k: getKorisnici().korisnici) {
-			if(k.getEmail().equals(korisnik.username) && k.getLozinka().equals(korisnik.password)) {
-				return k;
-			}
-		}
-		return null;
-	}
-
 	private  Korisnici getKorisnici(){
 		Korisnici  korisnici =  (Korisnici) ctx.getAttribute("korisnici");
 		if(korisnici == null ) {
@@ -88,5 +70,4 @@ public class Glavni {
 		}
 		return korisnici;
 	}
-	
 }

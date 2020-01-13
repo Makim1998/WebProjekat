@@ -7,26 +7,33 @@ var user;
 
 $(document).ready(function(){
 	getUser();
-	$("a[href = #vm]").click(function(){
+	console.log($("button[name = 'odjavi']").prop('name'));
+	$("a[href = '#vm']").click(function(){
+		console.log('vm pregled');
 		$("div #page-content-wrapper").load("vm.html");
 	});
 	
-	$("a[href = #korisnici]").click(function(){
+	$("a[href = '#korisnici']").click(function(){
+		console.log('korisnici pregled');
 		$("div #page-content-wrapper").load("korisnici.html");
 	});
 	
-	$("a[href = #organizacije]").click(function(){
+	$("a[href = '#organizacije']").click(function(){
+		console.log('organizacije pregled');
 		$("div #page-content-wrapper").load("orgaizacije.html");
 	});
 	
-	$("a[href = #diskovi]").click(function(){
+	$("a[href = '#diskovi']").click(function(){
+		console.log('diskovi pregled');
 		$("div #page-content-wrapper").load("diskovi.html");
 	});
 	
 	$("a[href = #kategorije]").click(function(){
+		console.log('kategorije pregled');
 		$("div #page-content-wrapper").load("kategorije.html");
 	});
 	$("a[href = #profil]").click(function(){
+		console.log('profil pregled');
 		$("div #page-content-wrapper").load("profil.html");
 	});
 });
@@ -43,7 +50,7 @@ function getUser(){
 				user = data;
 				return;
 			}
-			alert("greska!");
+			window.location.replace(loginurl);
 			
 		},
 		error : function(XMLHttpRequest, textStatus, errorThrown) {
@@ -53,7 +60,7 @@ function getUser(){
 	
 }
 
-$("button[name = odjavi]").click(function(){
+$(document).on('click','#odjavi' ,function(){
 	$.ajax({
 		type: 'GET',
 		url: logouturl,

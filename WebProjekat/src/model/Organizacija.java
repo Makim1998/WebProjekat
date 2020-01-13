@@ -1,8 +1,6 @@
 package model;
 
 import java.util.ArrayList;
-<<<<<<< HEAD
-=======
 
 public class Organizacija {
 	
@@ -49,12 +47,6 @@ public class Organizacija {
 		return "Organizacija: [ime=" + this.ime + ", opis=" + this.opis
 				+ ", logo" + this.logo + "]";
 	}
->>>>>>> branch 'master' of https://github.com/Makim1998/WebProjekat.git
 
-public class Organizacija {
-	public String ime;
-	public String opis;
-	public ArrayList<String> korisnici;
-	public ArrayList<String> vm;
-	
+
 }

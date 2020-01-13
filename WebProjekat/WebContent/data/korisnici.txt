@@ -1,0 +1,26 @@
+[
+  {
+    "email": "admin@gmail.com",
+    "lozinka": "admin",
+    "ime": "Marko",
+    "prezime": "Mijatovic",
+    "organizacija": "AMD",
+    "uloga": "SUPER_ADMIN"
+  },
+  {
+    "email": "ana@gmail.com",
+    "lozinka": "ana",
+    "ime": "Ana",
+    "prezime": "Mijatovic",
+    "organizacija": "Intel",
+    "uloga": "KORISNIK"
+  },
+  {
+    "email": "marko@gmail.com",
+    "lozinka": "ana",
+    "ime": "Ana",
+    "prezime": "Mijatovic",
+    "organizacija": "Nvidia",
+    "uloga": "ADMIN"
+  }
+]

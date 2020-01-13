@@ -12,13 +12,13 @@ public class Korisnik {
 		super();
 	}
 
-	public Korisnik(String email, String lozinka, String ime, String prezime, Uloga uloga) {
+	public Korisnik(String email, String lozinka, String ime, String prezime, String organizacija,Uloga uloga) {
 		super();
 		this.email = email;
 		this.lozinka = lozinka;
 		this.ime = ime;
 		this.prezime = prezime;
-		this.organizacija = null;
+		this.organizacija = organizacija;
 		this.uloga = uloga;
 	}
 

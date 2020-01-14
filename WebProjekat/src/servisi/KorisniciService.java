@@ -47,9 +47,11 @@ public class KorisniciService {
 	public Korisnik addKorisnik(Korisnik k) {
 		System.out.println("Dodavanje korisnika");
 		System.out.println(k);
-		if(getKorisnici().getKorisnik(k.email) == null) {
+		if(getKorisnici().getKorisnik(k.email) != null) {
+			System.out.println("Neispravan korisnik");
 			return null;
 		};
+		System.out.println("Ispravan korisnik");
 		((Korisnici) ctx.getAttribute("korisnici")).korisnici.add(k);
 		return k;
 	}

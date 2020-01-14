@@ -19,7 +19,7 @@ public class Korisnici {
 	
 	public Korisnik getKorisnik(String username) {
 		for(Korisnik k : korisnici) {
-			if(k.email == username) {
+			if(k.email.equals(username)) {
 				return k;
 			}
 		}

@@ -36,6 +36,7 @@ $(document).ready(function(){
 		console.log('profil pregled');
 		$("div #page-content-wrapper").load("profil.html");
 	});
+	
 });
 
 function getUser(){
@@ -58,7 +59,7 @@ function getUser(){
 		}
 	});
 	
-}
+};
 
 $(document).on('click','#odjavi' ,function(){
 	$.ajax({

@@ -6,6 +6,7 @@ getKorisnici();
 
 function getKorisnici(){
 	console.log('nadji korisnike');
+	console.log($(document).parent());
 	$.ajax({
 		type : 'GET',
 		url : getKorisniciurl,
@@ -29,7 +30,7 @@ function renderList(data) {
 	});
 }
 
-$(document).on('submit','#dodaj' ,function(){
+$(document).on('submit','#dodaj' ,function(e){
 	e.preventDefault();
 	console.log("Dodaj korisnika");
 	var email = $('input[name = email]').val();
@@ -42,18 +43,18 @@ $(document).on('submit','#dodaj' ,function(){
 		type: 'POST',
 		url: addurl,
 		contentType: 'application/json',
-		dataType: 'application/json',
+		dataType: 'json',
 		data: JSON.stringify({
 			"email" : email,
 			"lozinka" : lozinka,
 			"ime": ime,
 			"prezime": prezime,
 			"organizacija" :organizacija,
-			"tip" : tip,
+			"uloga" : tip,
 		}),
 		
 		success: function(data){
-			window.location.replace(baseurl);
+			console.log(data);
 		},
 		error : function(XMLHttpRequest, textStatus, errorThrown) {
 			alert("AJAX ERROR: " + textStatus);

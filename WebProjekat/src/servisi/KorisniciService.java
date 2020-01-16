@@ -56,6 +56,41 @@ public class KorisniciService {
 		return k;
 	}
 	
+	@POST
+	@Path("/izmena")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Korisnik izmeniKorisnik(Korisnik k) {
+		System.out.println("Izmena korisnika");
+		System.out.println(k);
+		if(getKorisnici().getKorisnik(k.email) == null) {
+			System.out.println("Neispravan korisnik");
+			return null;
+		};
+		Korisnik izmenjen =  getKorisnici().getKorisnik(k.email);
+		izmenjen.lozinka = k.lozinka;
+		izmenjen.uloga = k.uloga;
+		izmenjen.prezime = k.prezime;
+		izmenjen.ime = k.ime;
+		return izmenjen;
+	}
+	
+	@POST
+	@Path("/brisanje")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.TEXT_PLAIN)
+	public String obrisiKorisnik(String email) {
+		System.out.println("Brisanje korisnika");
+		System.out.println(email);
+		if(getKorisnici().getKorisnik(email) == null) {
+			System.out.println("Neispravan korisnik");
+			return "Notok";
+		};
+		Korisnik zaBrisanje = getKorisnici().getKorisnik(email);
+		((Korisnici) ctx.getAttribute("korisnici")).korisnici.remove(zaBrisanje);
+		return "OK";
+	}
+	
 	private  Korisnici getKorisnici(){
 		Korisnici  korisnici =  (Korisnici) ctx.getAttribute("korisnici");
 		if(korisnici == null ) {

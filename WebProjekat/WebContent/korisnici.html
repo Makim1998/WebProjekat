@@ -59,8 +59,50 @@
        		</div>
        		<div class="form-group">
            		<button type="submit" class="btn btn-primary btn-block">Dodaj</button>
+           		
        		</div>   
         </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Izmena korisnika</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id = "izmeni">  
+       		<div class="form-group">
+          		Email: <input name = "email" disabled type="text" class="form-control" required="required">
+       		</div>
+       		<div class="form-group">
+           		Lozinka: <input name = "lozinka"type="text" class="form-control" required="required" >
+       		</div>
+       		<div class="form-group">
+          		Ime: <input name = "ime" type="text" class="form-control" required="required">
+       		</div>
+       		<div class="form-group">
+           		Prezime: <input name = "prezime"type="text" class="form-control" required="required">
+       		</div>
+       		<div class="form-group">
+           		Organizacija<input name = "organizacija" disabled type="text" class="form-control" required="required">
+       		</div>
+       		<div class="form-group">
+           		Tip<select name = "tip" class="form-control" id="exampleFormControlSelect1">
+      				<option>ADMIN</option>
+					<option>KORISNIK</option>
+				</select>
+       		</div>
+       		<div class="form-group">
+           		<button type="submit" class="btn btn-primary btn-block">Izmeni</button>
+       		</div>   
+        </form>
+        <button id= "btnObrisi" class="btn btn-primary btn-block">Obrisi</button>
       </div>
     </div>
   </div>

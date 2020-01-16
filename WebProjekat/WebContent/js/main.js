@@ -7,7 +7,7 @@ var user;
 
 $(document).ready(function(){
 	getUser();
-	console.log($("button[name = 'odjavi']").prop('name'));
+	//console.log($("button[name = 'odjavi']").prop('name'));
 	$("a[href = '#vm']").click(function(){
 		console.log('vm pregled');
 		$("div #page-content-wrapper").load("vm.html");
@@ -46,13 +46,23 @@ function getUser(){
 		//contentType: 'application/json',
 		dataType: 'json',
 		success: function(data){
-			console.log(data);
-			if(typeof data !== "undefined"){
+			console.log(data === undefined);
+			//console.log(data.uloga);
+			if(data !== undefined){
 				user = data;
+				if(data.uloga === "ADMIN"){
+					$("a[href = #kategorije]").remove();
+					$("a[href = #organizacije]").remove();
+				}
+				if(data.uloga === "KORISNIK"){
+					$("a[href = #kategorije]").remove();
+					$("a[href = #organizacije]").remove();
+					$("a[href = #korisnici]").remove();
+				}
 				return;
 			}
+			console
 			window.location.replace(loginurl);
-			
 		},
 		error : function(XMLHttpRequest, textStatus, errorThrown) {
 			alert("AJAX ERROR: " + textStatus);

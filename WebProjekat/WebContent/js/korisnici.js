@@ -10,7 +10,7 @@ $(document).on('click','#btnIzmeni',function(){
 	$('form#izmeni').find('input[name = prezime]').val($(this).data("korisnik").prezime);
 	$('form#izmeni').find('input[name = organizacija]').val($(this).data("korisnik").organizacija);
 	$('form#izmeni').find('input[name = lozinka]').val($(this).data("korisnik").lozinka);
-	$('form#izmeni').find('input[name = tip]').val($(this).data("korisnik").uloga);
+	$('form#izmeni').find('select[name = tip]').val($(this).data("korisnik").uloga);
 	$('form#izmeni').find('input[name = email]').val($(this).data("korisnik").email);
 });
 

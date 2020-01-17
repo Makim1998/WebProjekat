@@ -32,11 +32,11 @@ public class KategorijaVM {
 		GPU = gPU;
 	}
 	
-	public KategorijaVM(String ime, int brojJezgara, int rAM) {
+	public KategorijaVM(String ime, int brojJezgara, int rAM, int GPU) {
 		this.ime = ime;
 		this.brojJezgara = brojJezgara;
 		this.RAM = rAM;
-		this.GPU = 0;
+		this.GPU = GPU;
 	}
 	
 }

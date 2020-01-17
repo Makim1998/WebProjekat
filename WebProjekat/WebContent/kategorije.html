@@ -2,18 +2,18 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Korisnici</title>
-	<script type="text/javascript" src="js/korisnici.js"></script>
+<title>Kategorije</title>
+	<script type="text/javascript" src="js/kategorije.js"></script>
 </head>
 <body>
-<p>Korisnici</p>
-<table class="table table-striped" id = "korisnici">
+<p>Kategorije</p>
+<table class="table table-striped" id = "kategorije">
   <thead>
     <tr>
-      <th scope="col">Email</th>
       <th scope="col">Ime</th>
-      <th scope="col">Prezime</th>
-      <th scope="col">Organizacija</th>
+      <th scope="col">Broj jezgara</th>
+      <th scope="col">RAM gB</th>
+      <th scope="col">GPU jezgra</th>
     </tr>
   </thead>
   <tbody>
@@ -21,7 +21,7 @@
 </table>
 <!-- Button trigger modal -->
 <button id = "Dodaj" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-  Dodaj korisnika
+  Dodaj kategoriju
 </button>
 
 <!-- Modal -->
@@ -29,7 +29,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Dodavanje korisnika</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Dodavanje kategorije</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -37,24 +37,32 @@
       <div class="modal-body">
         <form id = "dodaj">  
        		<div class="form-group">
-          		Email: <input name = "email" type="text" class="form-control" required="required">
-       		</div>
-       		<div class="form-group">
-           		Lozinka: <input name = "lozinka"type="text" class="form-control" required="required">
-       		</div>
-       		<div class="form-group">
           		Ime: <input name = "ime" type="text" class="form-control" required="required">
        		</div>
        		<div class="form-group">
-           		Prezime: <input name = "prezime"type="text" class="form-control" required="required">
+           		Broj jezgara: <select name = "broj" class="form-control" id="exampleFormControlSelect1">
+          			<option>1</option>
+      				<option>2</option>
+					<option>4</option>
+					<option>8</option>
+				</select>
        		</div>
        		<div class="form-group">
-           		Organizacija<input name = "organizacija"type="text" class="form-control" required="required">
+          		RAM:<select name = "ram" class="form-control" id="exampleFormControlSelect1">
+          			<option>4</option>
+      				<option>8</option>
+					<option>16</option>
+					<option>32</option>
+					<option>64</option>
+				</select>
        		</div>
        		<div class="form-group">
-           		Tip<select name = "tip" class="form-control" id="exampleFormControlSelect1">
-      				<option>ADMIN</option>
-					<option>KORISNIK</option>
+           		GPU: <select name = "gpu" class="form-control" id="exampleFormControlSelect1">
+      				<option>0</option>
+					<option>1</option>
+					<option>2</option>
+					<option>3</option>
+					<option>4</option>
 				</select>
        		</div>
        		<div class="form-group">
@@ -78,28 +86,37 @@
       <div class="modal-body">
         <form id = "izmeni">  
        		<div class="form-group">
-          		Email: <input name = "email" disabled type="text" class="form-control" required="required">
-       		</div>
-       		<div class="form-group">
-           		Lozinka: <input name = "lozinka"type="text" class="form-control" required="required" >
-       		</div>
-       		<div class="form-group">
           		Ime: <input name = "ime" type="text" class="form-control" required="required">
        		</div>
        		<div class="form-group">
-           		Prezime: <input name = "prezime"type="text" class="form-control" required="required">
+           		Broj jezgara: <select name = "broj" class="form-control" id="exampleFormControlSelect1">
+          			<option>1</option>
+      				<option>2</option>
+					<option>4</option>
+					<option>8</option>
+				</select>
        		</div>
        		<div class="form-group">
-           		Organizacija<input name = "organizacija" disabled type="text" class="form-control" required="required">
+          		RAM:<select name = "ram" class="form-control" id="exampleFormControlSelect1">
+          			<option>4</option>
+      				<option>8</option>
+					<option>16</option>
+					<option>32</option>
+					<option>64</option>
+				</select>
        		</div>
        		<div class="form-group">
-           		Tip<select name = "tip" class="form-control" id="exampleFormControlSelect1">
-      				<option>ADMIN</option>
-					<option>KORISNIK</option>
+           		GPU: <select name = "gpu" class="form-control" id="exampleFormControlSelect1">
+      				<option>0</option>
+					<option>1</option>
+					<option>2</option>
+					<option>3</option>
+					<option>4</option>
 				</select>
        		</div>
        		<div class="form-group">
            		<button type="submit" class="btn btn-primary btn-block">Izmeni</button>
+           		
        		</div>   
         </form>
         <button id= "btnObrisi" class="btn btn-primary btn-block">Obrisi</button>

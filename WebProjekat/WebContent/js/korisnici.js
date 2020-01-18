@@ -6,6 +6,7 @@ var baseurl = "../WebProjekat/homepage.html#korisnici"
 
 $(document).on('click','#btnIzmeni',function(){
     //alert($(this).data("korisnik").ime);
+    console.log("izmena");
 	$('form#izmeni').find('input[name = ime]').val($(this).data("korisnik").ime);
 	$('form#izmeni').find('input[name = prezime]').val($(this).data("korisnik").prezime);
 	$('form#izmeni').find('input[name = organizacija]').val($(this).data("korisnik").organizacija);
@@ -67,7 +68,7 @@ function renderList(data) {
 	});
 }
 
-$(document).on('submit','#dodaj' ,function(e){
+$(document).on('submit','#dodajKategorija' ,function(e){
 	e.preventDefault();
 	console.log("Dodaj korisnika");
 	var email = $('form#dodaj').find('input[name = email]').val();
@@ -92,6 +93,7 @@ $(document).on('submit','#dodaj' ,function(e){
 		
 		success: function(data){
 			console.log(data);
+			//getKorisnici();
 			$("a[href = '#korisnici']",parent.document).trigger('click');
 		},
 		error : function(XMLHttpRequest, textStatus, errorThrown) {

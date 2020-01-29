@@ -19,6 +19,14 @@ public class Disk {
 	public void setTip(TipDiska tip) {
 		this.tip = tip;
 	}
+	
+	public void setTip(String tip) {
+		if (tip.equals("SSD"))
+			this.tip = TipDiska.SSD;
+		else
+			this.tip = TipDiska.HDD;
+	}
+	
 	public int getKapacitet() {
 		return kapacitet;
 	}
@@ -30,6 +38,9 @@ public class Disk {
 	}
 	public void setVirtuelnaMasina(String virtuelnaMasina) {
 		this.virtuelnaMasina = virtuelnaMasina;
+	}
+		
+	public Disk() {
 	}
 	
 	public Disk(String ime, TipDiska tip, int kapacitet, String virtuelnaMasina) {

@@ -46,7 +46,7 @@ $(document).on('submit','#dodajOrganizacija' ,function(e){
 		}),
 		
 		success: function(data){
-			if(data === null){
+			if(data == null){
 				alert("Neuspesno dodavanje! Postoji organizacija sa istim imenom!");
 				return;
 			}

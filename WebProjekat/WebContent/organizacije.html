@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Organizacije</title>
+	<script type="text/javascript" src="js/organizacije.js"></script>
+</head>
+<body>
+<p>Organizacije</p>
+<table class="table table-striped" id = "organizacije">
+  <thead>
+    <tr>
+      <th scope="col">Ime</th>
+      <th scope="col">Logo</th>
+      <th scope="col">Opis</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+<!-- Button trigger modal -->
+<button id = "Dodaj" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  Dodaj organizaciju
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Dodavanje organizacije</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id = "dodajOrganizacija">  
+       		<div class="form-group">
+          		Ime: <input name = "ime" type="text" class="form-control" required="required">
+       		</div>
+       		<div class="form-group">
+                Logo: <input name = "logo" type="text" class="form-control">
+       		</div>
+       		<div class="form-group">
+                Opis: <input name = "opis" type="text" class="form-control" required="required">
+       		</div>
+       		<div class="form-group">
+           		<button type="submit" class="btn btn-primary btn-block">Dodaj</button>
+       		</div>   
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Izmena kategorije</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id = "izmeniOrganizacija">  
+            <div class="form-group">
+                Ime: <input name = "ime" type="text" class="form-control" required="required">
+             </div>
+             <div class="form-group">
+              Logo: <input name = "logo" type="text" class="form-control">
+             </div>
+             <div class="form-group">
+              Opis: <input name = "opis" type="text" class="form-control" required="required">
+             </div>
+             <div class="form-group">
+                 <button type="submit" class="btn btn-primary btn-block">Dodaj</button>
+             </div>  
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

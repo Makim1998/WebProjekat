@@ -35,7 +35,7 @@ public class OrganizacijeService {
 	private static Gson g = new Gson();
 	
 	@GET
-	@Path("/getOrganizacije")
+	@Path("/get")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Collection<Organizacija> getOrganizacije() {
 		Organizacije organizacije = (Organizacije)ctx.getAttribute("organizacije");
@@ -54,7 +54,7 @@ public class OrganizacijeService {
 	}
 	
 	@POST
-	@Path("/dodajOrganizaciju")
+	@Path("/dodaj")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Organizacija dodajOrg(OrganizacijaInfo novaOrg) {
@@ -74,12 +74,12 @@ public class OrganizacijeService {
 	}
 
 	@GET
-	@Path("/izmeniOrganizaciju/{nazivOrg}")
+	@Path("/izmeni/{nazivOrg}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public String izmeniOrg(@PathParam("nazivOrg") String id, OrganizacijaInfo zaIzmenu) {
 		Organizacije organizacije = (Organizacije) ctx.getAttribute("organizacije");
-		Organizacija izmenjena = organizacije.getOrganizacija(zaIzmenu.ime);
+		Organizacija izmenjena = organizacije.getOrganizacija(id);
 		if (izmenjena == null) {
 			System.out.println("Ne postoji takva organizacija");
 			return "Ne postoji takva organizacija";

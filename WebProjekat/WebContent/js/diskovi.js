@@ -13,11 +13,11 @@ $(document).ready(function() {
 	
 	        $.each(list, function(index, disk) {
             var tr = $('<tr></tr>');
-            tr.append('<td>' + kategorija.ime + '</td>' +
-                '<td>' + kategorija.brojJezgara + '</td>' + 
-                '<td>' + kategorija.ram + '</td>' + 
-                '<td>' + kategorija.gpu + '</td>' +
-                '<td><button id = "btnIzmeniKategorija" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#edit">Izmeni</button><td>');
+            tr.append('<td>' + disk.ime + '</td>' +
+                '<td>' + disk.tip + '</td>' + 
+                '<td>' + disk.kapacitet + '</td>' + 
+                '<td>' + disk.virtuelnaMasina + '</td>' +
+                '<td><button id = "btnIzmeniDisk" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#edit">Izmeni</button><td>');
             $('#diskovi').append(tr);
 	        });
         }
@@ -38,7 +38,7 @@ $(document).on('submit','#dodajDisk' ,function(e){
 		data: JSON.stringify({
 			"ime" : ime,
 			"tip" : tip,
-			"kapacitet": Number(kapacitet),
+			"kapacitet": parseInt(kapacitet),
 			"virtuelnaMasina": virtuelna,
 		}),
 		
@@ -71,7 +71,7 @@ $(document).on('submit','#izmeniDisk' ,function(e){
 		data: JSON.stringify({
 			"ime" : ime,
 			"tip" : tip,
-			"kapacitet": Number(kapacitet),
+			"kapacitet": parseInt(kapacitet),
 			"virtuelnaMasina": virtuelna,
 		}),
 		

@@ -50,5 +50,8 @@ public class VirtuelnaMasina {
 		this.datumPaljenja = datumPaljenja;
 		this.datumGasenja = datumGasenja;
 	}
+	
+	public VirtuelnaMasina() {
+	}	
 
 }

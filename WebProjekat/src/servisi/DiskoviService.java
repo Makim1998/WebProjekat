@@ -21,7 +21,6 @@ import javax.ws.rs.core.MediaType;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 
 import json.DiskJson;
 import model.Disk;
@@ -74,8 +73,10 @@ public class DiskoviService {
 		diskovi.diskovi.add(disk);
 		ctx.setAttribute("diskovi", diskovi);
 		try {
-			JsonWriter writer = new JsonWriter(new FileWriter(ctx.getRealPath("") + "\\data\\diskovi.txt", false));
-			g.toJson(writer, new TypeToken<ArrayList<Disk>>(){}.getType());
+			FileWriter writer = new FileWriter(ctx.getRealPath("") + "\\data\\diskovi.txt", false);
+			String data = g.toJson(diskovi);
+			writer.write(data);
+			writer.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -102,8 +103,10 @@ public class DiskoviService {
 		diskovi.diskovi.set(index, izmenjena);
 		ctx.setAttribute("diskovi", diskovi);
 		try {
-			JsonWriter writer = new JsonWriter(new FileWriter(ctx.getRealPath("") + "\\data\\diskovi.txt", false));
-			g.toJson(writer, new TypeToken<ArrayList<Disk>>(){}.getType());
+			FileWriter writer = new FileWriter(ctx.getRealPath("") + "\\data\\diskovi.txt", false);
+			String data = g.toJson(diskovi);
+			writer.write(data);
+			writer.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -126,8 +129,10 @@ public class DiskoviService {
 		diskovi.diskovi.remove(index);
 		ctx.setAttribute("diskovi", diskovi);
 		try {
-			JsonWriter writer = new JsonWriter(new FileWriter(ctx.getRealPath("") + "\\data\\diskovi.txt", false));
-			g.toJson(writer, new TypeToken<ArrayList<Disk>>(){}.getType());
+			FileWriter writer = new FileWriter(ctx.getRealPath("") + "\\data\\diskovi.txt", false);
+			String data = g.toJson(diskovi);
+			writer.write(data);
+			writer.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

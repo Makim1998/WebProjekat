@@ -9,6 +9,7 @@ import java.util.Collection;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -25,6 +26,11 @@ import com.google.gson.stream.JsonReader;
 import json.DiskJson;
 import model.Disk;
 import model.Diskovi;
+import model.Korisnik;
+import model.Organizacija;
+import model.Organizacije;
+import model.VirtuelnaMasina;
+import model.VirtuelneMasine;
 
 @Path("/diskovi")
 public class DiskoviService {
@@ -33,6 +39,8 @@ public class DiskoviService {
 	HttpServletRequest request;
 	@Context
 	ServletContext ctx;
+	@Context
+	HttpServletResponse response;
 	
 	private static Gson g = new Gson();
 	
@@ -52,6 +60,7 @@ public class DiskoviService {
 				e.printStackTrace();
 			}
 		}
+		response.setStatus(200);
 		return diskovi.getDiskovi();
 	}
 	
@@ -64,11 +73,40 @@ public class DiskoviService {
 		disk.setIme(noviDisk.ime);
 		disk.setTip(noviDisk.tip);
 		disk.setKapacitet(noviDisk.kapacitet);
+		VirtuelneMasine masine = (VirtuelneMasine)ctx.getAttribute("masine");
+		if (masine.getMasina(noviDisk.virtuelnaMasina) == null) {
+			System.out.println("Ne postoji takva virtuelna masina!");
+			response.setStatus(400);
+			return null;
+		}
 		disk.setVirtuelnaMasina(noviDisk.virtuelnaMasina);
+		Organizacije organizacije = (Organizacije)ctx.getAttribute("organizacije");
+		if (organizacije.getOrganizacija(noviDisk.organizacija) == null) {
+			System.out.println("Ne postoji takva organizacija!");
+			response.setStatus(400);
+			return null;
+		}
+		disk.setOrganizacija(noviDisk.organizacija);
+		
 		Diskovi diskovi = (Diskovi) ctx.getAttribute("diskovi");
 		if (diskovi.getDisk(disk.getIme()) != null) {
 			System.out.println("Vec postoji takav disk!");
+			response.setStatus(400);
 			return null;
+		}
+		Korisnik korisnik = (Korisnik) request.getSession().getAttribute("ulogovan");
+		if (korisnik.getUloga().toString().equals("korisnik")) {
+			System.out.println("Nemate pravo da dodajete disk!");
+			response.setStatus(403);
+			return null;
+		}
+		if (korisnik.getUloga().toString().equals("admin")) {
+			Organizacija organizacija = organizacije.getOrganizacija(noviDisk.organizacija);
+			if (!organizacija.getListaKorisnika().contains(korisnik.getEmail())) {
+				System.out.println("Ne pripadate datoj organizaciji!");
+				response.setStatus(403);
+				return null;
+			}
 		}
 		diskovi.diskovi.add(disk);
 		ctx.setAttribute("diskovi", diskovi);
@@ -81,6 +119,21 @@ public class DiskoviService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		VirtuelnaMasina masina = masine.getMasina(noviDisk.virtuelnaMasina);
+		masina.addDisk(noviDisk.ime);
+		int index = masine.masine.indexOf(masina);
+		masine.masine.set(index, masina);
+		ctx.setAttribute("masine", masine);
+		try {
+			FileWriter writer = new FileWriter(ctx.getRealPath("") + "\\data\\masine.txt", false);
+			String data = g.toJson(masine);
+			writer.write(data);
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		response.setStatus(200);
 		return disk;
 	}
 	
@@ -99,7 +152,34 @@ public class DiskoviService {
 		izmenjena.setIme(zaIzmenu.ime);
 		izmenjena.setKapacitet(zaIzmenu.kapacitet);
 		izmenjena.setTip(zaIzmenu.tip);
+		VirtuelneMasine masine = (VirtuelneMasine)ctx.getAttribute("masine");
+		if (masine.getMasina(zaIzmenu.virtuelnaMasina) == null) {
+			System.out.println("Ne postoji takva virtuelna masina!");
+			response.setStatus(400);
+			return null;
+		}
 		izmenjena.setVirtuelnaMasina(zaIzmenu.virtuelnaMasina);
+		Organizacije organizacije = (Organizacije)ctx.getAttribute("organizacije");
+		if (organizacije.getOrganizacija(zaIzmenu.organizacija) == null) {
+			System.out.println("Ne postoji takva organizacija!");
+			response.setStatus(400);
+			return null;
+		}
+		izmenjena.setOrganizacija(zaIzmenu.organizacija);
+		Korisnik korisnik = (Korisnik) request.getSession().getAttribute("ulogovan");
+		if (korisnik.getUloga().toString().equals("korisnik")) {
+			System.out.println("Nemate pravo da menjate disk!");
+			response.setStatus(403);
+			return null;
+		}
+		if (korisnik.getUloga().toString().equals("admin")) {
+			Organizacija organizacija = organizacije.getOrganizacija(zaIzmenu.organizacija);
+			if (!organizacija.getListaKorisnika().contains(korisnik.getEmail())) {
+				System.out.println("Ne pripadate datoj organizaciji!");
+				response.setStatus(403);
+				return null;
+			}
+		}
 		diskovi.diskovi.set(index, izmenjena);
 		ctx.setAttribute("diskovi", diskovi);
 		try {
@@ -110,6 +190,19 @@ public class DiskoviService {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		VirtuelnaMasina masina = masine.getMasina(zaIzmenu.virtuelnaMasina);
+		masina.addDisk(zaIzmenu.ime);
+		int index2 = masine.masine.indexOf(masina);
+		masine.masine.set(index2, masina);
+		ctx.setAttribute("masine", masine);
+		try {
+			FileWriter writer = new FileWriter(ctx.getRealPath("") + "\\data\\masine.txt", false);
+			String data = g.toJson(masine);
+			writer.write(data);
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 		}
 		return "OK";
 	}
@@ -136,6 +229,20 @@ public class DiskoviService {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		VirtuelneMasine masine = (VirtuelneMasine)ctx.getAttribute("masine");
+		VirtuelnaMasina masina = masine.getMasina(diskovi.getDisk(ime).getVirtuelnaMasina());
+		masina.removeDisk(diskovi.getDisk(ime).getIme());
+		int index2 = masine.masine.indexOf(masina);
+		masine.masine.set(index2, masina);
+		ctx.setAttribute("masine", masine);
+		try {
+			FileWriter writer = new FileWriter(ctx.getRealPath("") + "\\data\\masine.txt", false);
+			String data = g.toJson(masine);
+			writer.write(data);
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 		}
 		return "OK";
 	}

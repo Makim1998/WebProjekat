@@ -15,7 +15,8 @@ $(document).ready(function() {
 	        $.each(list, function(index, masina) {
             var tr = $('<tr></tr>');
             tr.append('<td>' + masina.ime + '</td>' +
-                '<td>' + masina.kategorija + '</td>' + 
+				'<td>' + masina.kategorija + '</td>' +
+				'<td>' + masina.organizacija + '</td>' + 
                 '<td>' + masina.datumPaljenja + '</td>' + 
                 '<td>' + masina.datumGasenja + '</td>' +
                 '<td><button id = "btnizmeniVM" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#edit">Izmeni</button><td>');
@@ -28,7 +29,8 @@ $(document).ready(function() {
 $(document).on('submit','#dodajVM' ,function(e){
 	e.preventDefault();
 	var ime = $('form#dodajVM').find('input[name = ime]').val();
-    var kategorija = $('form#dodajVM').find('input[name = kategorija]').val();
+	var kategorija = $('form#dodajVM').find('input[name = kategorija]').val();
+	var organizacija = $('form#dodajVM').find('input[name = organizacija]').val();
 	$.ajax({
 		type: 'POST',
 		url: addurl,
@@ -36,7 +38,8 @@ $(document).on('submit','#dodajVM' ,function(e){
 		dataType: 'json',
 		data: JSON.stringify({
 			"ime" : ime,
-			"kategorija" : kategorija
+			"kategorija" : kategorija,
+			"organizacija": organizacija
 		}),
 		
 		success: function(data){
@@ -58,6 +61,7 @@ $(document).on('submit','#izmeniVM' ,function(e){
 	var staro = $('form#izmeniVM').find('input[name = ime]').data("staro");
 	var ime = $('form#izmeniVM').find('input[name = ime]').val();
 	var kategorija = $('form#izmeniVM').find('select[name = kategorija]').val();
+	var organizacija = $('form#izmeniVM').find('select[name = organizacija]').val();
 	$.ajax({
 		type: 'GET',
 		url: izmenaurl + '/' + staro,
@@ -66,6 +70,7 @@ $(document).on('submit','#izmeniVM' ,function(e){
 		data: JSON.stringify({
 			"ime" : ime,
 			"kategorija" : kategorija,
+			"organizacija": organizacija
 		}),
 		
 		success: function(data){

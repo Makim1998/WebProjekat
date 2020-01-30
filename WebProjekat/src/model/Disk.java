@@ -6,6 +6,7 @@ public class Disk {
 	private TipDiska tip;
 	private int kapacitet;
 	private String virtuelnaMasina;
+	private String organizacija;
 	
 	public String getIme() {
 		return ime;
@@ -49,6 +50,12 @@ public class Disk {
 		this.tip = tip;
 		this.kapacitet = kapacitet;
 		this.virtuelnaMasina = virtuelnaMasina;
+	}
+	public String getOrganizacija() {
+		return organizacija;
+	}
+	public void setOrganizacija(String organizacija) {
+		this.organizacija = organizacija;
 	}
 	
 }

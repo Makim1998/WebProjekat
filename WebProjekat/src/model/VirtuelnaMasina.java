@@ -7,6 +7,7 @@ public class VirtuelnaMasina {
 	
 	private String ime;
 	private KategorijaVM kategorija;
+	private String organizacija;
 	private ArrayList<String> diskovi;
 	private Date datumPaljenja;
 	private Date datumGasenja;
@@ -52,6 +53,23 @@ public class VirtuelnaMasina {
 	}
 	
 	public VirtuelnaMasina() {
+	}
+	
+	public String getOrganizacija() {
+		return organizacija;
+	}
+	
+	public void setOrganizacija(String organizacija) {
+		this.organizacija = organizacija;
 	}	
 
+	public void addDisk(String imeDiska) {
+		diskovi.add(imeDiska);
+	}
+	
+	public void removeDisk(String imeDiska) {
+		int index = diskovi.indexOf(imeDiska);
+		diskovi.remove(index);
+	}
+	
 }

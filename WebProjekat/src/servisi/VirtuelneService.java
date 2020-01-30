@@ -88,6 +88,7 @@ public class VirtuelneService {
 		VirtuelnaMasina masina = new VirtuelnaMasina();
 		masina.setIme(novaVM.ime);
 		masina.setKategorija(getKategorija(novaVM.kategorija));
+		masina.setOrganizacija(novaVM.organizacija);
 		masina.setDiskovi(new ArrayList<String>());
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		masina.setDatumPaljenja(sdf.parse(sdf.format(new Date())));
@@ -125,6 +126,7 @@ public class VirtuelneService {
 		int index = masine.masine.indexOf(izmenjena);
 		izmenjena.setIme(zaIzmenu.ime);
 		izmenjena.setKategorija(getKategorija(zaIzmenu.kategorija));
+		izmenjena.setOrganizacija(zaIzmenu.organizacija);
 		masine.masine.set(index, izmenjena);
 		ctx.setAttribute("masine", masine);
 		try {

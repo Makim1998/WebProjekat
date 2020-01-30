@@ -16,7 +16,8 @@ $(document).ready(function() {
             tr.append('<td>' + disk.ime + '</td>' +
                 '<td>' + disk.tip + '</td>' + 
                 '<td>' + disk.kapacitet + '</td>' + 
-                '<td>' + disk.virtuelnaMasina + '</td>' +
+				'<td>' + disk.virtuelnaMasina + '</td>' +
+				'<td>' + disk.organizacija + '</td>' +
                 '<td><button id = "btnIzmeniDisk" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#edit">Izmeni</button><td>');
             $('#diskovi').append(tr);
 	        });
@@ -30,6 +31,7 @@ $(document).on('submit','#dodajDisk' ,function(e){
 	var tip = $('form#dodajDisk').find('select[name = tip]').val();
 	var kapacitet = $('form#dodajDisk').find('select[name = kapacitet]').val();
 	var virtuelna = $('form#dodajDisk').find('input[name = virtuelna]').val();
+	var organizacija = $('form#dodajDisk').find('input[name = organizacija]').val();
 	$.ajax({
 		type: 'POST',
 		url: addurl,
@@ -40,6 +42,7 @@ $(document).on('submit','#dodajDisk' ,function(e){
 			"tip" : tip,
 			"kapacitet": parseInt(kapacitet),
 			"virtuelnaMasina": virtuelna,
+			"organizacija": organizacija
 		}),
 		
 		success: function(data){
@@ -63,6 +66,7 @@ $(document).on('submit','#izmeniDisk' ,function(e){
 	var tip = $('form#izmeniDisk').find('select[name = tip]').val();
 	var kapacitet = $('form#izmeniDisk').find('select[name = kapacitet]').val();
 	var virtuelna = $('form#izmeniDisk').find('input[name = virtuelna]').val();
+	var organizacija = $('form#izmeniDisk').find('input[name = organizacija]').val();
 	$.ajax({
 		type: 'GET',
 		url: izmenaurl + '/' + staro,
@@ -73,6 +77,7 @@ $(document).on('submit','#izmeniDisk' ,function(e){
 			"tip" : tip,
 			"kapacitet": parseInt(kapacitet),
 			"virtuelnaMasina": virtuelna,
+			"organizacija": organizacija
 		}),
 		
 		success: function(data){

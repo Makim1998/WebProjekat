@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -30,6 +32,7 @@ import model.VirtuelnaMasina;
 import model.VirtuelneMasine;
 
 
+@Path("/masine")
 public class VirtuelneService {
 	
 	@Context
@@ -81,13 +84,14 @@ public class VirtuelneService {
 	@Path("/dodaj")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public VirtuelnaMasina dodajDisk(VM novaVM) {
+	public VirtuelnaMasina dodajDisk(VM novaVM) throws ParseException {
 		VirtuelnaMasina masina = new VirtuelnaMasina();
 		masina.setIme(novaVM.ime);
 		masina.setKategorija(getKategorija(novaVM.kategorija));
 		masina.setDiskovi(new ArrayList<String>());
-		masina.setDatumPaljenja(new Date());
-		masina.setDatumGasenja(new Date());
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		masina.setDatumPaljenja(sdf.parse(sdf.format(new Date())));
+		masina.setDatumGasenja(sdf.parse(sdf.format(new Date())));
 		VirtuelneMasine masine = (VirtuelneMasine) ctx.getAttribute("masine");
 		if (masine.getMasina(masina.getIme()) != null) {
 			System.out.println("Vec postoji takva virtuelna masina!");
@@ -148,6 +152,36 @@ public class VirtuelneService {
 		VirtuelnaMasina zaBrisanje = masine.getMasina(ime);
 		int index = masine.masine.indexOf(zaBrisanje);
 		masine.masine.remove(index);
+		ctx.setAttribute("masine", masine);
+		try {
+			FileWriter writer = new FileWriter(ctx.getRealPath("") + "\\data\\masine.txt", false);
+			String data = g.toJson(masine);
+			writer.write(data);
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "OK";
+	}
+	
+	@GET
+	@Path("/aktivacija")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.TEXT_PLAIN)
+	public String aktivirajVM(String ime) {
+		VirtuelneMasine masine = (VirtuelneMasine) ctx.getAttribute("masine");
+		if(masine.getMasina(ime) == null) {
+			System.out.println("Neispravna virtuelna masina");
+			return "Notok";
+		};
+		VirtuelnaMasina aktivirana = masine.getMasina(ime);
+		int index = masine.masine.indexOf(aktivirana);
+		if (aktivirana.getDatumPaljenja().before(aktivirana.getDatumGasenja()))
+			aktivirana.setDatumPaljenja(new Date());
+		else
+			aktivirana.setDatumGasenja(new Date());
+		masine.masine.set(index, aktivirana);
 		ctx.setAttribute("masine", masine);
 		try {
 			FileWriter writer = new FileWriter(ctx.getRealPath("") + "\\data\\masine.txt", false);

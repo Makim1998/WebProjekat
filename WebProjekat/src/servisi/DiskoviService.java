@@ -61,7 +61,17 @@ public class DiskoviService {
 			}
 		}
 		response.setStatus(200);
-		return diskovi.getDiskovi();
+		Korisnik korisnik = (Korisnik) request.getSession().getAttribute("ulogovan");
+		if (korisnik.getUloga().toString().equals("super admin"))
+			return diskovi.getDiskovi();
+		else {
+			ArrayList<Disk> ret = new ArrayList<Disk>();
+			for (Disk d: diskovi.getDiskovi()) {
+				if (d.getOrganizacija().equals(korisnik.organizacija))
+					ret.add(d);
+			}
+			return ret;
+		}
 	}
 	
 	@POST
@@ -204,6 +214,7 @@ public class DiskoviService {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 		}
+		response.setStatus(200);
 		return "OK";
 	}
 	
@@ -215,8 +226,14 @@ public class DiskoviService {
 		Diskovi diskovi = (Diskovi)ctx.getAttribute("diskovi");
 		if(diskovi.getDisk(ime) == null) {
 			System.out.println("Neispravan disk");
+			response.setStatus(400);
 			return "Notok";
 		};
+		Korisnik korisnik = (Korisnik)request.getSession().getAttribute("ulogovan");
+		if (!korisnik.getUloga().toString().equals("super admin")) {
+			response.setStatus(403);
+			return "Nemate pravo na brisanje diska!";
+		}
 		Disk zaBrisanje = diskovi.getDisk(ime);
 		int index = diskovi.diskovi.indexOf(zaBrisanje);
 		diskovi.diskovi.remove(index);
@@ -244,6 +261,7 @@ public class DiskoviService {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 		}
+		response.setStatus(200);
 		return "OK";
 	}
 	

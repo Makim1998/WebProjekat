@@ -48,5 +48,12 @@ public class Organizacija {
 				+ ", logo" + this.logo + "]";
 	}
 
+	public boolean hasKorisnik(String email) {
+		for (String korisnik: listaKorisnika) {
+			if (korisnik.equals(email))
+				return true;
+		}
+		return false;
+	}
 
 }

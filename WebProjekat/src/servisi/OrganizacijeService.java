@@ -7,6 +7,7 @@ import java.util.Collection;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -21,6 +22,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
 import json.OrganizacijaInfo;
+import model.Korisnik;
 import model.Organizacija;
 import model.Organizacije;
 
@@ -31,6 +33,8 @@ public class OrganizacijeService {
 	HttpServletRequest request;
 	@Context
 	ServletContext ctx;
+	@Context
+	HttpServletResponse response;
 	
 	private static Gson g = new Gson();
 	
@@ -50,7 +54,13 @@ public class OrganizacijeService {
 				e.printStackTrace();
 			}
 		}
-		return organizacije.getOrganizacije();
+		response.setStatus(200);
+		Korisnik korisnik = (Korisnik) request.getSession().getAttribute("ulogovan");
+		if (korisnik.getUloga().toString().equals("super admin"))
+			return organizacije.getOrganizacije();
+		else {
+			return new ArrayList<Organizacija>();
+		}
 	}
 	
 	@POST
@@ -63,13 +73,21 @@ public class OrganizacijeService {
 		organizacija.setLogo(novaOrg.logo);
 		organizacija.setOpis(novaOrg.opis);
 		organizacija.setListaKorisnika(new ArrayList<String>());
+		Korisnik korisnik = (Korisnik) request.getSession().getAttribute("ulogovan");
+		if (!korisnik.getUloga().toString().equals("super admin")) {
+			System.out.println("Ne mozete da dodajete organizacije");
+			response.setStatus(403);
+			return null;
+		}
 		Organizacije organizacije = (Organizacije) ctx.getAttribute("organizacije");
 		if (organizacije.getOrganizacija(organizacija.getIme()) != null) {
 			System.out.println("Vec postoji takva organizacija!");
+			response.setStatus(400);
 			return null;
 		}
 		organizacije.organizacije.add(organizacija);
 		ctx.setAttribute("organizacije", organizacije);
+		response.setStatus(200);
 		return organizacija;
 	}
 
@@ -80,17 +98,29 @@ public class OrganizacijeService {
 	public String izmeniOrg(@PathParam("nazivOrg") String id, OrganizacijaInfo zaIzmenu) {
 		Organizacije organizacije = (Organizacije) ctx.getAttribute("organizacije");
 		Organizacija izmenjena = organizacije.getOrganizacija(id);
+		Korisnik korisnik = (Korisnik) request.getSession().getAttribute("ulogovan");
+		if (korisnik.uloga.toString().equals("korisnik")) {
+			response.setStatus(403);
+			return "Nemate pravo na izmenu organizacije!";
+		}
+		if (korisnik.uloga.toString().equals("admin")) {
+			if (izmenjena.hasKorisnik(korisnik.getEmail())) {
+				response.setStatus(403);
+				return "Ne pripadate datoj organizaciji!";
+			}
+		}
 		if (izmenjena == null) {
 			System.out.println("Ne postoji takva organizacija");
+			response.setStatus(400);
 			return "Ne postoji takva organizacija";
 		}
 		int index = organizacije.organizacije.indexOf(izmenjena);
 		izmenjena.setIme(zaIzmenu.ime);
 		izmenjena.setLogo(zaIzmenu.logo);
 		izmenjena.setOpis(zaIzmenu.opis);
-		izmenjena.setListaKorisnika(new ArrayList<String>());
 		organizacije.organizacije.set(index, izmenjena);
 		ctx.setAttribute("organizacije", organizacije);
+		response.setStatus(200);
 		return "OK";
 	}
 }

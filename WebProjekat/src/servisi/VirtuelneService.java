@@ -12,6 +12,7 @@ import java.util.Date;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -26,8 +27,12 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
 import json.VM;
+import model.Disk;
+import model.Diskovi;
 import model.KategorijaVM;
 import model.Kategorije;
+import model.Korisnik;
+import model.Organizacije;
 import model.VirtuelnaMasina;
 import model.VirtuelneMasine;
 
@@ -39,13 +44,15 @@ public class VirtuelneService {
 	HttpServletRequest request;
 	@Context
 	ServletContext ctx;
+	@Context
+	HttpServletResponse response;
 	
 	private static Gson g = new Gson();
 	
 	@GET
 	@Path("/get")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Collection<VirtuelnaMasina> getDiskovi() {
+	public Collection<VirtuelnaMasina> getVMasine() {
 		VirtuelneMasine masine = (VirtuelneMasine)ctx.getAttribute("masine");
 		if (masine == null) {
 			String ctxPath = ctx.getRealPath("") + "//data//masine.txt";
@@ -58,7 +65,18 @@ public class VirtuelneService {
 				e.printStackTrace();
 			}
 		}
-		return masine.getMasine();
+		response.setStatus(200);
+		Korisnik korisnik = (Korisnik) request.getSession().getAttribute("ulogovan");
+		if (korisnik.getUloga().toString().equals("super admin"))
+			return masine.getMasine();
+		else {
+			ArrayList<VirtuelnaMasina> ret = new ArrayList<VirtuelnaMasina>();
+			for (VirtuelnaMasina vm: masine.getMasine()) {
+				if (vm.getOrganizacija().equals(korisnik.getOrganizacija()))
+					ret.add(vm);
+			}
+			return ret;
+		}
 	}
 	
 	private KategorijaVM getKategorija(String imeKat) {
@@ -84,10 +102,34 @@ public class VirtuelneService {
 	@Path("/dodaj")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public VirtuelnaMasina dodajDisk(VM novaVM) throws ParseException {
+	public VirtuelnaMasina dodajMasina(VM novaVM) throws ParseException {
+		Korisnik korisnik = (Korisnik)request.getSession().getAttribute("ulogovan");
+		if (korisnik.getUloga().toString().equals("korisnik")) {
+			System.out.println("Nemate pravo da dodajete virtuelnu masinu");
+			response.setStatus(403);
+			return null;
+		}
 		VirtuelnaMasina masina = new VirtuelnaMasina();
 		masina.setIme(novaVM.ime);
+		if (getKategorija(novaVM.kategorija) == null) {
+			System.out.println("Ne postoji takva kategorija!");
+			response.setStatus(400);
+			return null;
+		}
 		masina.setKategorija(getKategorija(novaVM.kategorija));
+		if (korisnik.getUloga().toString().equals("admin")) {
+			if (!korisnik.getOrganizacija().equals(novaVM.organizacija)) {
+				System.out.println("Ne pripadate datoj organizaciji");
+				response.setStatus(403);
+				return null;
+			}
+		}
+		Organizacije organizacije = (Organizacije)ctx.getAttribute("organizacije");
+		if (organizacije.getOrganizacija(novaVM.organizacija) == null) {
+			System.out.println("Ne postoji takva organizacija!");
+			response.setStatus(400);
+			return null;
+		}
 		masina.setOrganizacija(novaVM.organizacija);
 		masina.setDiskovi(new ArrayList<String>());
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -96,10 +138,12 @@ public class VirtuelneService {
 		VirtuelneMasine masine = (VirtuelneMasine) ctx.getAttribute("masine");
 		if (masine.getMasina(masina.getIme()) != null) {
 			System.out.println("Vec postoji takva virtuelna masina!");
+			response.setStatus(400);
 			return null;
 		}
 		masine.masine.add(masina);
 		ctx.setAttribute("masine", masine);
+		response.setStatus(200);
 		try {
 			FileWriter writer = new FileWriter(ctx.getRealPath("") + "\\data\\masine.txt", false);
 			String data = g.toJson(masine);
@@ -116,7 +160,13 @@ public class VirtuelneService {
 	@Path("/izmeni/{nazivVM}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String izmeniDisk(@PathParam("nazivVM") String id, VM zaIzmenu) {
+	public String izmeniMasina(@PathParam("nazivVM") String id, VM zaIzmenu) {
+		Korisnik korisnik = (Korisnik)request.getSession().getAttribute("ulogovan");
+		if (korisnik.getUloga().toString().equals("korisnik")) {
+			System.out.println("Nemate pravo da dodajete virtuelnu masinu");
+			response.setStatus(403);
+			return null;
+		}
 		VirtuelneMasine masine = (VirtuelneMasine) ctx.getAttribute("masine");
 		VirtuelnaMasina izmenjena = masine.getMasina(id);
 		if (izmenjena == null) {
@@ -125,7 +175,26 @@ public class VirtuelneService {
 		}
 		int index = masine.masine.indexOf(izmenjena);
 		izmenjena.setIme(zaIzmenu.ime);
+		if (getKategorija(zaIzmenu.kategorija) == null) {
+			System.out.println("Ne postoji takva kategorija!");
+			response.setStatus(400);
+			return null;
+		}
 		izmenjena.setKategorija(getKategorija(zaIzmenu.kategorija));
+		if (korisnik.getUloga().toString().equals("admin")) {
+			if (!korisnik.getOrganizacija().equals(zaIzmenu.organizacija)) {
+				System.out.println("Ne pripadate datoj organizaciji");
+				response.setStatus(403);
+				return null;
+			}
+		}
+		izmenjena.setKategorija(getKategorija(zaIzmenu.kategorija));
+		Organizacije organizacije = (Organizacije)ctx.getAttribute("organizacije");
+		if (organizacije.getOrganizacija(zaIzmenu.organizacija) == null) {
+			System.out.println("Ne postoji takva organizacija!");
+			response.setStatus(400);
+			return null;
+		}
 		izmenjena.setOrganizacija(zaIzmenu.organizacija);
 		masine.masine.set(index, izmenjena);
 		ctx.setAttribute("masine", masine);
@@ -138,6 +207,7 @@ public class VirtuelneService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		response.setStatus(200);
 		return "OK";
 	}
 	
@@ -145,15 +215,36 @@ public class VirtuelneService {
 	@Path("/brisanje")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String obrisiDisk(String ime) {
+	public String obrisiMasina(String ime) {
+		Korisnik korisnik = (Korisnik)request.getSession().getAttribute("ulogovan");
+		if (korisnik.getUloga().toString().equals("korisnik")) {
+			System.out.println("Nemate pravo da brisete virtuelnu masinu");
+			response.setStatus(403);
+			return null;
+		}
 		VirtuelneMasine masine = (VirtuelneMasine) ctx.getAttribute("masine");
 		if(masine.getMasina(ime) == null) {
 			System.out.println("Neispravna virtuelna masina");
+			response.setStatus(400);
 			return "Notok";
 		};
 		VirtuelnaMasina zaBrisanje = masine.getMasina(ime);
 		int index = masine.masine.indexOf(zaBrisanje);
 		masine.masine.remove(index);
+		Diskovi diskovi = new Diskovi();
+		if (ctx.getAttribute("diskovi") == null) {
+			JsonReader reader;
+			try {
+				reader = new JsonReader(new FileReader(ctx.getRealPath("") + "//data//diskovi.txt"));
+				diskovi = new Diskovi();
+				diskovi.setDiskovi(g.fromJson(reader, new TypeToken<ArrayList<Disk>>(){}.getType()));
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else
+			diskovi = (Diskovi)ctx.getAttribute("diskovi");
 		ctx.setAttribute("masine", masine);
 		try {
 			FileWriter writer = new FileWriter(ctx.getRealPath("") + "\\data\\masine.txt", false);
@@ -164,6 +255,21 @@ public class VirtuelneService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		for (Disk disk: diskovi.getDiskovi()) {
+			if (disk.getVirtuelnaMasina().equals(zaBrisanje.getIme()))
+				diskovi.diskovi.remove(diskovi.diskovi.indexOf(disk));
+		}
+		ctx.setAttribute("diskovi", diskovi);
+		try {
+			FileWriter writer = new FileWriter(ctx.getRealPath("") + "\\data\\diskovi.txt", false);
+			String data = g.toJson(diskovi);
+			writer.write(data);
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		response.setStatus(200);
 		return "OK";
 	}
 	
@@ -172,9 +278,16 @@ public class VirtuelneService {
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.TEXT_PLAIN)
 	public String aktivirajVM(String ime) {
+		Korisnik korisnik = (Korisnik)request.getSession().getAttribute("ulogovan");
+		if (korisnik.getUloga().toString().equals("korisnik")) {
+			System.out.println("Nemate pravo da brisete virtuelnu masinu");
+			response.setStatus(403);
+			return "Nemate pravo da brisete virtuelnu masinu";
+		}
 		VirtuelneMasine masine = (VirtuelneMasine) ctx.getAttribute("masine");
 		if(masine.getMasina(ime) == null) {
 			System.out.println("Neispravna virtuelna masina");
+			response.setStatus(400);
 			return "Notok";
 		};
 		VirtuelnaMasina aktivirana = masine.getMasina(ime);
@@ -194,6 +307,7 @@ public class VirtuelneService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		response.setStatus(200);
 		return "OK";
 	}
 

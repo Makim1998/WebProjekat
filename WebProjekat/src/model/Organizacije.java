@@ -28,5 +28,5 @@ public class Organizacije {
 		}
 		return null;
 	}
-	
+
 }

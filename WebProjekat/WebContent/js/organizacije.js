@@ -7,7 +7,7 @@ $(document).ready(function() {
 });
 
 function getOrganizacije(){
-	console.log('nadji kategorije');
+	console.log('nadji organizacije');
 	$.ajax({
 		type : 'GET',
 		url : getOrganizacijeurl,
@@ -74,6 +74,7 @@ $(document).on('submit','#izmeniOrganizacija' ,function(e){
 			"ime" : ime,
 			"logo" : logo,
 			"opis": opis,
+			"novoIme": staro
 		}),
 		
 		success: function(data){

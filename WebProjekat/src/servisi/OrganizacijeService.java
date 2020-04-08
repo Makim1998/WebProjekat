@@ -12,7 +12,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -92,10 +91,11 @@ public class OrganizacijeService {
 	}
 
 	@GET
-	@Path("/izmeni/{nazivOrg}")
+	@Path("/izmeni")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String izmeniOrg(@PathParam("nazivOrg") String id, OrganizacijaInfo zaIzmenu) {
+	public String izmeniOrg(OrganizacijaInfo zaIzmenu) {
+		String id = zaIzmenu.ime;
 		Organizacije organizacije = (Organizacije) ctx.getAttribute("organizacije");
 		Organizacija izmenjena = organizacije.getOrganizacija(id);
 		Korisnik korisnik = (Korisnik) request.getSession().getAttribute("ulogovan");
@@ -104,7 +104,7 @@ public class OrganizacijeService {
 			return "Nemate pravo na izmenu organizacije!";
 		}
 		if (korisnik.uloga.toString().equals("admin")) {
-			if (izmenjena.hasKorisnik(korisnik.getEmail())) {
+			if (!izmenjena.hasKorisnik(korisnik.getEmail())) {
 				response.setStatus(403);
 				return "Ne pripadate datoj organizaciji!";
 			}
@@ -114,8 +114,15 @@ public class OrganizacijeService {
 			response.setStatus(400);
 			return "Ne postoji takva organizacija";
 		}
+		for (Organizacija o: organizacije.getOrganizacije()) {
+			if (o.getIme().equals(zaIzmenu.novoIme) && !o.getIme().equals(id)) {
+				System.out.println("Vec postoji organizacija sa tim imenom");
+				response.setStatus(400);
+				return "Vec postoji organizacija sa tim imenom";
+			}
+		}
 		int index = organizacije.organizacije.indexOf(izmenjena);
-		izmenjena.setIme(zaIzmenu.ime);
+		izmenjena.setIme(zaIzmenu.novoIme);
 		izmenjena.setLogo(zaIzmenu.logo);
 		izmenjena.setOpis(zaIzmenu.opis);
 		organizacije.organizacije.set(index, izmenjena);

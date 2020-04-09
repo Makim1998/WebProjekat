@@ -2,6 +2,8 @@ package servisi;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -21,9 +23,14 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
 import json.OrganizacijaInfo;
+import model.Disk;
+import model.Diskovi;
+import model.Korisnici;
 import model.Korisnik;
 import model.Organizacija;
 import model.Organizacije;
+import model.VirtuelnaMasina;
+import model.VirtuelneMasine;
 
 @Path("/organizacije")
 public class OrganizacijeService {
@@ -86,6 +93,15 @@ public class OrganizacijeService {
 		}
 		organizacije.organizacije.add(organizacija);
 		ctx.setAttribute("organizacije", organizacije);
+		try {
+			FileWriter writer = new FileWriter(ctx.getRealPath("") + "\\data\\organizacije.txt", false);
+			String data = g.toJson(organizacije);
+			writer.write(data);
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		response.setStatus(200);
 		return organizacija;
 	}
@@ -127,7 +143,65 @@ public class OrganizacijeService {
 		izmenjena.setOpis(zaIzmenu.opis);
 		organizacije.organizacije.set(index, izmenjena);
 		ctx.setAttribute("organizacije", organizacije);
+		try {
+			FileWriter writer = new FileWriter(ctx.getRealPath("") + "\\data\\organizacije.txt", false);
+			String data = g.toJson(organizacije);
+			writer.write(data);
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		updateIzmOrganizacije(zaIzmenu.ime, zaIzmenu.novoIme);		
 		response.setStatus(200);
 		return "OK";
+	}
+	
+	private void updateIzmOrganizacije(String staro, String novo) {
+		Korisnici korisnici = (Korisnici) ctx.getAttribute("korisnici");
+		for (Korisnik k: korisnici.getKorisnici()) {
+			if (k.getOrganizacija().equals(staro))
+				k.setOrganizacija(novo);
+		}
+		ctx.setAttribute("korisnici", korisnici);
+		try {
+			FileWriter writer = new FileWriter(ctx.getRealPath("") + "\\data\\korisnici.txt", false);
+			String data = g.toJson(korisnici);
+			writer.write(data);
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		VirtuelneMasine virtuelne = (VirtuelneMasine) ctx.getAttribute("masine");
+		for (VirtuelnaMasina vm: virtuelne.getMasine()) {
+			if (vm.getOrganizacija().equals(staro))
+				vm.setOrganizacija(novo);
+		}
+		ctx.setAttribute("masine", virtuelne);
+		try {
+			FileWriter writer = new FileWriter(ctx.getRealPath("") + "\\data\\masine.txt", false);
+			String data = g.toJson(virtuelne);
+			writer.write(data);
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Diskovi diskovi = (Diskovi) ctx.getAttribute("diskovi");
+		for (Disk d: diskovi.getDiskovi()) {
+			if (d.getOrganizacija().equals(staro))
+				d.setOrganizacija(novo);
+		}
+		ctx.setAttribute("diskovi", diskovi);
+		try {
+			FileWriter writer = new FileWriter(ctx.getRealPath("") + "\\data\\diskovi.txt", false);
+			String data = g.toJson(diskovi);
+			writer.write(data);
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

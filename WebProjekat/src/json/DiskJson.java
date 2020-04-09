@@ -6,6 +6,6 @@ public class DiskJson {
 	public String tip;
 	public int kapacitet;
 	public String virtuelnaMasina;
-	public String organizacija;
+	public String novoIme;
 
 }

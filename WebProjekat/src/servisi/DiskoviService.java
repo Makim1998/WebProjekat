@@ -14,7 +14,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -90,28 +89,22 @@ public class DiskoviService {
 			return null;
 		}
 		disk.setVirtuelnaMasina(noviDisk.virtuelnaMasina);
-		Organizacije organizacije = (Organizacije)ctx.getAttribute("organizacije");
-		if (organizacije.getOrganizacija(noviDisk.organizacija) == null) {
-			System.out.println("Ne postoji takva organizacija!");
-			response.setStatus(400);
-			return null;
-		}
-		disk.setOrganizacija(noviDisk.organizacija);
-		
+		Korisnik korisnik = (Korisnik) request.getSession().getAttribute("ulogovan");
+		disk.setOrganizacija(korisnik.getOrganizacija());
+		Organizacije organizacije = (Organizacije) ctx.getAttribute("organizacije");
 		Diskovi diskovi = (Diskovi) ctx.getAttribute("diskovi");
 		if (diskovi.getDisk(disk.getIme()) != null) {
 			System.out.println("Vec postoji takav disk!");
 			response.setStatus(400);
 			return null;
 		}
-		Korisnik korisnik = (Korisnik) request.getSession().getAttribute("ulogovan");
 		if (korisnik.getUloga().toString().equals("korisnik")) {
 			System.out.println("Nemate pravo da dodajete disk!");
 			response.setStatus(403);
 			return null;
 		}
 		if (korisnik.getUloga().toString().equals("admin")) {
-			Organizacija organizacija = organizacije.getOrganizacija(noviDisk.organizacija);
+			Organizacija organizacija = organizacije.getOrganizacija(korisnik.getOrganizacija());
 			if (!organizacija.getListaKorisnika().contains(korisnik.getEmail())) {
 				System.out.println("Ne pripadate datoj organizaciji!");
 				response.setStatus(403);
@@ -148,18 +141,21 @@ public class DiskoviService {
 	}
 	
 	@GET
-	@Path("/izmeni/{nazivDiska}")
+	@Path("/izmeni")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String izmeniDisk(@PathParam("nazivDiska") String id, DiskJson zaIzmenu) {
+	public String izmeniDisk(DiskJson zaIzmenu) {
+		String id = zaIzmenu.ime;
 		Diskovi diskovi = (Diskovi) ctx.getAttribute("diskovi");
 		Disk izmenjena = diskovi.getDisk(id);
+		Korisnik korisnik = (Korisnik) request.getSession().getAttribute("ulogovan");
 		if (izmenjena == null) {
 			System.out.println("Ne postoji takav disk");
+			response.setStatus(400);
 			return "Ne postoji takav disk";
 		}
 		int index = diskovi.diskovi.indexOf(izmenjena);
-		izmenjena.setIme(zaIzmenu.ime);
+		izmenjena.setIme(zaIzmenu.novoIme);
 		izmenjena.setKapacitet(zaIzmenu.kapacitet);
 		izmenjena.setTip(zaIzmenu.tip);
 		VirtuelneMasine masine = (VirtuelneMasine)ctx.getAttribute("masine");
@@ -170,20 +166,14 @@ public class DiskoviService {
 		}
 		izmenjena.setVirtuelnaMasina(zaIzmenu.virtuelnaMasina);
 		Organizacije organizacije = (Organizacije)ctx.getAttribute("organizacije");
-		if (organizacije.getOrganizacija(zaIzmenu.organizacija) == null) {
-			System.out.println("Ne postoji takva organizacija!");
-			response.setStatus(400);
-			return null;
-		}
-		izmenjena.setOrganizacija(zaIzmenu.organizacija);
-		Korisnik korisnik = (Korisnik) request.getSession().getAttribute("ulogovan");
+		izmenjena.setOrganizacija(korisnik.getOrganizacija());
 		if (korisnik.getUloga().toString().equals("korisnik")) {
 			System.out.println("Nemate pravo da menjate disk!");
 			response.setStatus(403);
 			return null;
 		}
 		if (korisnik.getUloga().toString().equals("admin")) {
-			Organizacija organizacija = organizacije.getOrganizacija(zaIzmenu.organizacija);
+			Organizacija organizacija = organizacije.getOrganizacija(korisnik.getOrganizacija());
 			if (!organizacija.getListaKorisnika().contains(korisnik.getEmail())) {
 				System.out.println("Ne pripadate datoj organizaciji!");
 				response.setStatus(403);
@@ -202,7 +192,7 @@ public class DiskoviService {
 			e.printStackTrace();
 		}
 		VirtuelnaMasina masina = masine.getMasina(zaIzmenu.virtuelnaMasina);
-		masina.addDisk(zaIzmenu.ime);
+		masina.addDisk(zaIzmenu.novoIme);
 		int index2 = masine.masine.indexOf(masina);
 		masine.masine.set(index2, masina);
 		ctx.setAttribute("masine", masine);
